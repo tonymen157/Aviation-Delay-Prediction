@@ -1,0 +1,9 @@
+kagglehub
+pandas
+polars
+scikit-learn
+xgboost
+sqlalchemy
+psycopg2-binary
+loguru
+jupyter
