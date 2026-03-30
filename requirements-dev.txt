@@ -1,0 +1,12 @@
+# Development dependencies
+# --------------------
+# Linting and formatting
+ruff==0.5.2
+black==24.3.0
+isort==5.13.2
+
+# Pre‑commit runner
+pre-commit==3.7.0
+
+# Optional static type checking
+mypy==1.10.0
