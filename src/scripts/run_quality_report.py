@@ -7,10 +7,11 @@ Guarda un reporte JSON en data/reports/ y opcionalmente un resumen en logs.
 
 import json
 from pathlib import Path
-import sys
 
-# Importar utilidades
-sys.path.insert(0, str(Path(__file__).parent.parent.parent))
+# Import utilities
+from utils.pipeline_common import add_project_root_to_path
+add_project_root_to_path()
+
 from utils.logging_config import setup_logger
 
 try:

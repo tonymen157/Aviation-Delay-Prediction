@@ -9,9 +9,12 @@ import polars as pl
 from pathlib import Path
 import sys
 
-# Importar utilidades
-sys.path.insert(0, str(Path(__file__).parent.parent.parent))
+# Import utilities
+from utils.pipeline_common import add_project_root_to_path
+add_project_root_to_path()
 from utils.logging_config import setup_logger
+```
+
 
 # Configurar logger
 logger = setup_logger("01_clean_and_transform")
@@ -136,23 +139,13 @@ def export_to_parquet(
 
     logger.info("Exportación completada exitosamente.")
 
-    # Lanzar Generación automática del reporte de calidad (invoca script 02)
+    # Generar automáticamente el reporte de calidad (centralizado en pipeline_common)
     try:
-        logger.info("Invocando generación automática de reporte de calidad...")
-        from subprocess import run
-        quality_script = Path(__file__).parent / "02_data_quality_report.py"
-        if quality_script.exists():
-            # Ejecutar el script como subproceso, capturando su salida
-            result = run([sys.executable, str(quality_script)], capture_output=True, text=True)
-            if result.returncode == 0:
-                logger.info("Reporte de calidad generado exitosamente.")
-                logger.debug(f"Salida reporte: {result.stdout}")
-            else:
-                logger.warning(f"Error generando reporte de calidad: {result.stderr}")
-        else:
-            logger.warning("Script de reporte de calidad no encontrado: %s", quality_script)
-    except Exception as e:
-        logger.warning(f"Excepción al generar reporte de calidad: {e}")
+        logger.info("Generando reporte de calidad...")
+        from utils.pipeline_common import run_quality_report
+        run_quality_report()
+    except Exception as exc:  # pragma: no cover – defensive
+        logger.error(f"Error al ejecutar el reporte de calidad: {exc}")
 
 
 def main():

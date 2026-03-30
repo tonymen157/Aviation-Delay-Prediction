@@ -9,8 +9,10 @@ import joblib
 from pathlib import Path
 import sys
 
-# Importar utilidades compartidas
-sys.path.insert(0, str(Path(__file__).parent.parent.parent))
+# Import utilities shared across scripts
+from utils.pipeline_common import add_project_root_to_path
+add_project_root_to_path()
+
 from utils.database import load_environment_variables, create_database_engine
 from utils.logging_config import setup_logger
 

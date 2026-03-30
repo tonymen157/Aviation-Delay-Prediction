@@ -1,0 +1,1 @@
+- [agents_config.json](memory/agents_config.json) — agents definitions with permissions and system prompts

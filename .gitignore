@@ -1,3 +1,8 @@
+# Data directories and large files
+data/
+*.csv
+*.parquet
+
 # Python
 __pycache__/
 *.py[cod]
@@ -27,3 +32,12 @@ Desktop.ini
 
 # Ruff
 .ruff_cache/
+
+# Logs
+*.log
+
+# Claude Code and personal config
+.claude/
+memory/
+agents_config.json
+memory/agents_config.json
