@@ -41,3 +41,39 @@ Desktop.ini
 memory/
 agents_config.json
 memory/agents_config.json
+
+# Additional ignores for clean repo
+# Model artifacts (large binaries)
+models/
+*.pkl
+*.joblib
+
+# Logs directory
+logs/
+
+# Coverage reports
+.coverage
+htmlcov/
+*.cover
+
+# Distribution / build
+dist/
+build/
+*.egg-info/
+
+# Jupyter checkpoints (already have .ipynb_checkpoints/ but ensure)
+.ipynb_checkpoints/
+
+# Python environments (already covered but ensure)
+.python-version
+
+# Mac Finder
+.DS_Store
+
+# Windows thumbnail cache
+Thumbs.db
+
+# Logs
+*.log
+logs/
+

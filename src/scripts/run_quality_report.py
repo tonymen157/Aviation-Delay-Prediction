@@ -6,7 +6,14 @@ Guarda un reporte JSON en data/reports/ y opcionalmente un resumen en logs.
 """
 
 import json
+import sys
 from pathlib import Path
+
+# Add project root to sys.path so that `utils` can be imported.
+# Mirrors the logic in utils/pipeline_common.add_project_root_to_path().
+project_root = Path(__file__).resolve().parents[2]  # repo root
+if str(project_root) not in sys.path:
+    sys.path.insert(0, str(project_root))
 
 # Import utilities
 from utils.pipeline_common import add_project_root_to_path

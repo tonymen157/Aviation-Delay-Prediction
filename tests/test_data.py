@@ -53,3 +53,60 @@ def test_target_column_exists_and_no_nulls():
     print(
         f"✅ Test de datos pasado: {df.shape[0]:,} filas, columna TARGET_IS_DELAYED válida"
     )
+
+
+def test_no_duplicate_rows():
+    """No duplicate rows in the processed dataset."""
+    parquet_path = (
+        Path(__file__).parent.parent / "data" / "processed" / "flights_cleaned.parquet"
+    )
+    df = pl.read_parquet(parquet_path)
+    # Polars no tiene unique_rows(); usamos unique() y comparamos el número de filas
+    # Si existen duplicados, el conteo será menor tras aplicar unique()
+    assert df.shape[0] == df.unique().shape[0], "Dataset contains duplicate rows"
+
+
+def test_expected_columns_exist():
+    """Ensure all expected columns are present."""
+    # Columnas que el pipeline de limpieza realmente genera
+    expected_cols = {
+        "MONTH",
+        "DAY",
+        "DAY_OF_WEEK",
+        "AIRLINE",
+        "ORIGIN_AIRPORT",
+        "DESTINATION_AIRPORT",
+        "SCHEDULED_DEPARTURE",
+        "DISTANCE",
+        "DEPARTURE_DELAY",
+        "TARGET_IS_DELAYED",
+    }
+    parquet_path = (
+        Path(__file__).parent.parent / "data" / "processed" / "flights_cleaned.parquet"
+    )
+    df = pl.read_parquet(parquet_path)
+    missing = expected_cols - set(df.columns)
+    assert not missing, f"Missing columns: {missing}"
+
+
+def test_numeric_columns_are_numeric():
+    """Check that numeric columns have appropriate dtypes."""
+    parquet_path = (
+        Path(__file__).parent.parent / "data" / "processed" / "flights_cleaned.parquet"
+    )
+    df = pl.read_parquet(parquet_path)
+    # Ampliamos los tipos admitidos para cubrir Int16, Int32, Int64, UInt*, Float*
+    numeric_cols = ["DEPARTURE_DELAY"]
+    for col in numeric_cols:
+        assert df[col].dtype in [
+            pl.Int8,
+            pl.Int16,
+            pl.Int32,
+            pl.Int64,
+            pl.UInt8,
+            pl.UInt16,
+            pl.UInt32,
+            pl.UInt64,
+            pl.Float32,
+            pl.Float64,
+        ], f"{col} is not numeric (dtype={df[col].dtype})"

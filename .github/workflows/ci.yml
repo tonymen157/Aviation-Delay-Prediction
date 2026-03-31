@@ -36,11 +36,3 @@ jobs:
         python src/scripts/run_quality_report.py
       # Allow failure: if report fails, CI still passes (we just want to see errors)
       continue-on-error: true
-
-    - name: Upload coverage to Codecov (optional)
-      # Uncomment if you have Codecov set up
-      # uses: codecov/codecov-action@v3
-      # with:
-      #   files: coverage.xml
-      #   fail_ci_if_error: true
-      pass

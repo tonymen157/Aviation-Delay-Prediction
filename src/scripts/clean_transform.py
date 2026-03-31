@@ -5,18 +5,21 @@ Pipeline: Lectura → Filtrado → Feature Engineering → Exportación a Parque
 Incluye generación automática de reporte de calidad de datos (Data Quality Report).
 """
 
-import polars as pl
-from pathlib import Path
 import sys
+from pathlib import Path
 
-# Import utilities
-from utils.pipeline_common import add_project_root_to_path
-add_project_root_to_path()
+import polars as pl
+
+# ----------------------------------------------------------------------
+# Add project root to sys.path so that `utils` can be imported.
+# Mirrors the logic in utils/pipeline_common.add_project_root_to_path().
+# ----------------------------------------------------------------------
+project_root = Path(__file__).resolve().parents[2]  # repo root
+if str(project_root) not in sys.path:
+    sys.path.insert(0, str(project_root))
+
+# Shared utilities
 from utils.logging_config import setup_logger
-```
-
-
-# Configurar logger
 logger = setup_logger("01_clean_and_transform")
 
 
@@ -83,10 +86,12 @@ def clean_flights(flights: pl.DataFrame) -> pl.DataFrame:
 
 
 def select_columns(flights_clean: pl.DataFrame) -> pl.DataFrame:
-    """Selecciona solo las columnas necesarias para la tabla de hechos."""
+    """Selecciona solo las columnas necesarias para la tabla de hechos.
+    Elimina duplicados basado en las columnas del modelo para garantizar unicidad en la salida."""
     logger.info("Seleccionando columnas para tabla de hechos...")
 
-    required_columns = [
+    # Columnas necesarias para el modelo
+    model_columns = [
         "MONTH",
         "DAY",
         "DAY_OF_WEEK",
@@ -100,12 +105,21 @@ def select_columns(flights_clean: pl.DataFrame) -> pl.DataFrame:
     ]
 
     # Verificar que todas las columnas existen
-    missing_cols = [col for col in required_columns if col not in flights_clean.columns]
+    missing_cols = [col for col in model_columns if col not in flights_clean.columns]
     if missing_cols:
         raise ValueError(f"Columnas faltantes en el DataFrame: {missing_cols}")
 
-    flights_selected = flights_clean.select(required_columns)
-    logger.info(f"Columnas seleccionadas: {len(required_columns)}")
+    # Seleccionar solo las columnas del modelo y eliminar duplicados
+    # Esto garantiza que la salida no tenga filas duplicadas en las columnas del modelo
+    flights_selected = flights_clean.select(model_columns).unique()
+
+    initial_rows = flights_clean.shape[0]
+    unique_rows = flights_selected.shape[0]
+    logger.info(f"Columnas seleccionadas: {len(model_columns)}")
+    logger.info(f"Filas después de eliminar duplicados (basado en columnas de modelo): {initial_rows:,} -> {unique_rows:,}")
+    if initial_rows != unique_rows:
+        logger.info(f"Se eliminaron {initial_rows - unique_rows} filas duplicadas")
+    logger.info(f"Filas finales: {unique_rows:,}")
 
     return flights_selected
 

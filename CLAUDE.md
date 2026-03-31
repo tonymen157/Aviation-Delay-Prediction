@@ -6,6 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 - **Install dependencies**: `pip install -r requirements.txt`
 - **Run tests**: `pytest tests/ -v`
+- **Run a single test**: `pytest tests/test_name.py -v`
 - **Execute ETL pipeline step**:
   - Download data: `python src/etl/00_download_data.py`
   - Clean & transform: `python src/etl/01_clean_and_transform.py`

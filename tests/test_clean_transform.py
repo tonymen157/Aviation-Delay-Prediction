@@ -12,7 +12,7 @@ import polars as pl
 import pytest
 
 # Ruta al script original (con nombre numérico)
-MODULE_PATH = Path(__file__).parent.parent / "src" / "etl" / "01_clean_and_transform.py"
+MODULE_PATH = Path(__file__).parent.parent / "src" / "scripts" / "clean_transform.py"
 
 
 def load_clean_transform_module():

@@ -29,7 +29,7 @@ except ImportError:
 logger = setup_logger("00_download_data")
 
 
-def download_and_organize_data():
+def download_and_organize_data(raw_data_dir=None):
     """Descarga dataset de Kaggle y lo organiza en data/raw/."""
     logger.info("Iniciando descarga del dataset 'usdot/flight-delays'...")
 
@@ -42,8 +42,9 @@ def download_and_organize_data():
         raise SystemExit(1)
 
     # Definir directorio destino
-    project_root = Path(__file__).parent.parent.parent
-    raw_data_dir = project_root / "data" / "raw"
+    if raw_data_dir is None:
+        project_root = Path(__file__).parent.parent.parent
+        raw_data_dir = project_root / "data" / "raw"
     raw_data_dir.mkdir(parents=True, exist_ok=True)
 
     # Copiar archivos del cache a data/raw/
